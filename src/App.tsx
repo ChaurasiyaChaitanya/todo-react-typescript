@@ -1,12 +1,13 @@
 import './App.css'
+import TodoAdd from './components/TodoAdd';
 
 function App() {
-
+  
   return (
     <>
-      <h1>To Do App with React and Typescript</h1>
+    <TodoAdd />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
