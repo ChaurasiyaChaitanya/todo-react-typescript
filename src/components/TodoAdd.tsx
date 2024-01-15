@@ -1,6 +1,6 @@
 import { Box, InputBase, Button, styled, Typography } from "@mui/material";
 import { v4 as uuid } from 'uuid';
-import { todoObj } from "../models/todo";
+import { TodoObj } from "../models/todo";
 import { useState } from "react";
 
 const Container = styled(Box)`
@@ -30,15 +30,16 @@ const initTodo = {
 }
 
 interface IAddTodoProps {
-    addTodo: (todo: todoObj) => void
+    addTodo: (todo: TodoObj) => void
 }
 
 const TodoAdd: React.FC<IAddTodoProps> = ({addTodo}) => {
 
-    const [todo, setTodo] = useState<todoObj>(initTodo);
+    const [todo, setTodo] = useState<TodoObj>(initTodo);
     const [error, setError] = useState<String>('');
 
     const onChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        if(error) setError('');
         setTodo({...todo, [e.target.name] : e.target.value})
     }
 
