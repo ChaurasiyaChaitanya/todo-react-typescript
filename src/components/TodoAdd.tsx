@@ -1,4 +1,7 @@
-import { Box, InputBase, Button, styled } from "@mui/material";
+import { Box, InputBase, Button, styled, Typography } from "@mui/material";
+import { v4 as uuid } from 'uuid';
+import { todoObj } from "../models/todo";
+import { useState } from "react";
 
 const Container = styled(Box)`
     & > * {
@@ -7,7 +10,6 @@ const Container = styled(Box)`
     }
     & > div > input[type="text"] {
         border-bottom: 1px solid #111111;
-        opacity: 0.5;
         width: 300px;
         padding-right: 25px;
     }
@@ -19,21 +21,56 @@ const Container = styled(Box)`
     }
 `;
 
-const TodoAdd: React.FC = () => {
+
+const initTodo = {
+    id: '',
+    title: '',
+    body: '',
+    color: ''
+}
+
+interface IAddTodoProps {
+    addTodo: (todo: todoObj) => void
+}
+
+const TodoAdd: React.FC<IAddTodoProps> = ({addTodo}) => {
+
+    const [todo, setTodo] = useState<todoObj>(initTodo);
+    const [error, setError] = useState<String>('');
+
+    const onChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setTodo({...todo, [e.target.name] : e.target.value})
+    }
+
+    const onTodoAddHandler = () => {
+        if (!todo.title && !todo.body) {
+            setError('All fields are mandatory');
+            return;
+        }
+
+        addTodo({ ...todo, id: uuid() });
+        setTodo(initTodo);
+    }
+
     return(
         <>
-        <h1>To Do App</h1>
+        <Typography variant="h4">To Do App</Typography>
+        { error && <Typography color="red" padding="10px">{error}</Typography> }
         <Container>
             <InputBase 
                 name="title" 
                 placeholder="Title" 
+                value={todo.title}
+                onChange={(e) => onChangeHandler(e)}
                 inputProps={{
                     maxLength: 30
                 }}
             />
             <InputBase 
-                name="text" 
+                name="body" 
                 placeholder="Body"
+                value={todo.body}
+                onChange={(e) => onChangeHandler(e)}
                 inputProps={{
                     maxLength: 60
                 }}
@@ -42,10 +79,12 @@ const TodoAdd: React.FC = () => {
                 type="color"
                 name="color"
                 defaultValue={'#F5F5F5'}
+                onChange={(e) => onChangeHandler(e)}
                 placeholder="Choose color" 
             />
             <Button 
-                variant="outlined">
+                variant="outlined"
+                onClick={() => onTodoAddHandler()}>
                     Add ToDo
             </Button>
         </Container>
